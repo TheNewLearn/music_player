@@ -11,6 +11,7 @@ class music_player:
     ispaued = False
     current_index = 0
     current_playing = ""
+    finished = True
 
     def __init__(self):
         mixer.init()
@@ -53,9 +54,12 @@ class music_player:
         return self.music[self.current_index].end_time
 
     def pause(self):
-        if mixer.music.get_busy() and not self.ispaued:
-            mixer.music.pause()
-            self.ispaued = True
+        mixer.music.pause()
+        self.ispaued = True
+
+    def unpause(self):
+        mixer.music.unpause()
+        self.ispaued = False
 
     def getname(self):
         return self.playlist()[self.current_index].author
@@ -85,6 +89,32 @@ class music_player:
         else:
             mixer.music.unpause()
             self.ispaued = False
+
+    def play_song(self):
+        if self.current_index == 0:
+            mixer.music.load(self.playlist()[0].path)
+            mixer.music.play()
+        if not mixer.music.get_busy() and not self.ispaued:
+            self.next()
+        elif self.ispaued:
+            mixer.music.pause()
+
+
+
+
+    def next(self):
+        if self.current_index < len(self.playlist()):
+            mixer.music.stop()
+            self.current_index+=1
+            mixer.music.load(self.playlist()[self.current_index].path)
+            mixer.music.play()
+
+    def pre(self):
+        if self.current_index > 0:
+            mixer.music.stop()
+            self.current_index -= 1
+            mixer.music.load(self.playlist()[self.current_index].path)
+            mixer.music.play()
 
     def setvolum(self, num):
         if num < 1:

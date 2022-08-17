@@ -6,4 +6,9 @@ Develop by python
     - https://dribbble.com/shots/6092133-Music-Player-UI/attachments/11248588?mode=media
 
 Application snapshot:
+
 ![image](https://github.com/TheNewLearn/music_player/blob/main/res/image/demo.PNG)
+
+* Update Function
+    - Next Song Event
+    - previous Song Event

@@ -337,6 +337,7 @@ class Ui_Form(object):
         self.b_l_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.b_l_frame.setObjectName("b_l_frame")
         self.previous_button = QtWidgets.QPushButton(self.b_l_frame)
+        self.previous_button.clicked.connect(lambda : self.presong_event())
         self.previous_button.setGeometry(QtCore.QRect(30, 30, 31, 28))
         self.previous_button.setStyleSheet("#previous_button{\n"
                                            "background-color:rgba(6,6,7,255);\n"
@@ -390,6 +391,7 @@ class Ui_Form(object):
         self.play_button.clicked.connect(lambda :self.playevent())
         self.play_button.setObjectName("play_button")
         self.next_button = QtWidgets.QPushButton(self.b_l_frame)
+        self.next_button.clicked.connect(lambda : self.nextsong_event())
         self.next_button.setGeometry(QtCore.QRect(140, 30, 31, 28))
         self.next_button.setStyleSheet("#next_button{\n"
                                        "background-color:rgba(6,6,7,255);\n"
@@ -710,27 +712,45 @@ class Ui_Form(object):
         self.gridLayout.setRowStretch(0, 7)
         self.retranslateUi(Form)
         self.thread = Qthread.ThreadTask(self.mp)
+        self.thread.trigger.connect(self.update_time_label)
+        self.thread.qthread_signal.connect(self.update_process_bar)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def playevent(self):
             if self.play_button.isChecked():
-                self.mp.play_song(3)
-                self.thread.start()
-                self.thread.trigger.connect(self.update_time_label)
-                self.thread.qthread_signal.connect(self.update_process_bar)
-                self.music_end_label.setText(self.mp.playtime())
-                self.current_song_name_label.setText(str(self.mp.currentmusic().title))
-                self.current_song_artist_label.setText(str(self.mp.currentmusic().author))
-                self.music_bar.setMaximum(int(self.mp.currentmusic().totaltime))
-                myPixmap = QtGui.QPixmap(self.mp.currentmusic().img)
-                myScaledPixmap = myPixmap.scaled(71, 51)
-                self.current_song_icon_label.setPixmap(myScaledPixmap)
-                self.thread.r_thread()
-                for i in range(0,len(self.mp.playlist())):
-                    print(self.mp.playlist()[i].path)
-
+                if not self.mp.ispaued:
+                    self.mp.play_song()
+                    self.update_info()
+                    self.thread.start()
+                    self.thread.r_thread()
+                else:
+                    self.mp.unpause()
             else:
                 self.thread.s_thread()
+                self.mp.pause()
+
+
+    def update_info(self):
+        self.music_end_label.setText(self.mp.playtime())
+        self.current_song_name_label.setText(str(self.mp.currentmusic().title))
+        self.current_song_artist_label.setText(str(self.mp.currentmusic().author))
+        self.music_bar.setMaximum(int(self.mp.currentmusic().totaltime))
+        myPixmap = QtGui.QPixmap(self.mp.currentmusic().img)
+        myScaledPixmap = myPixmap.scaled(71, 51)
+        self.current_song_icon_label.setPixmap(myScaledPixmap)
+
+    def nextsong_event(self):
+        self.mp.next()
+        self.update_info()
+        if not self.play_button.isChecked():
+            self.play_button.click()
+
+    def presong_event(self):
+        self.mp.pre()
+        self.update_info()
+        if not self.play_button.isChecked():
+            self.play_button.click()
+
 
     def update_time_label(self, value):
             self.music_start_label.setText(value)

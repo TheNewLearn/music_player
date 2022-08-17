@@ -720,11 +720,13 @@ class Ui_Form(object):
             if self.play_button.isChecked():
                 if not self.mp.ispaued:
                     self.mp.play_song()
-                    self.update_info()
                     self.thread.start()
                     self.thread.r_thread()
+                    self.update_info()
                 else:
                     self.mp.unpause()
+                    self.thread.start()
+                    self.thread.r_thread()
             else:
                 self.thread.s_thread()
                 self.mp.pause()

@@ -741,16 +741,13 @@ class Ui_Form(object):
                 if not self.mp.ispaued:
                     self.mp.play_song()
                     self.thread.start()
-                    self.thread.r_thread()
                     self.update_info()
                     self.music_handle.playing()
                 else:
                     self.mp.unpause()
                     self.thread.start()
-                    self.thread.r_thread()
                     self.music_handle.playing()
             else:
-                self.thread.s_thread()
                 self.mp.pause()
 
 
@@ -766,12 +763,14 @@ class Ui_Form(object):
     def nextsong_event(self):
         self.mp.next()
         self.update_info()
+        self.thread.start()
         if not self.play_button.isChecked():
             self.play_button.click()
 
     def presong_event(self):
         self.mp.pre()
         self.update_info()
+        self.thread.start()
         if not self.play_button.isChecked():
             self.play_button.click()
 

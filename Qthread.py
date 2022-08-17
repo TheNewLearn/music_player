@@ -23,8 +23,6 @@ class ThreadTask(QThread):
             print(process_value)
             self.qthread_signal.emit(process_value)
             sleep(1)
-            if self.stop_thread:
-                break
 
     def s_thread(self):
         self.stop_thread = True

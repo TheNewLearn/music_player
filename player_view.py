@@ -4,7 +4,7 @@ from music import music
 
 
 class music_player:
-    path = "C:/Users/fung/Desktop/music/*/*/*"
+    path = "C:/Users/fung/Desktop/music/*/*/*.mp3"
     music = []
     current_play = ""
     playtime = ""
@@ -103,7 +103,7 @@ class music_player:
 
 
     def next(self):
-        if self.current_index < len(self.playlist()):
+        if self.current_index < len(self.playlist())-1:
             mixer.music.stop()
             self.current_index+=1
             mixer.music.load(self.playlist()[self.current_index].path)

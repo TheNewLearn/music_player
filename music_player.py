@@ -9,6 +9,7 @@
 import Qthread
 from PyQt5 import QtCore, QtGui, QtWidgets,Qt
 from player_view import music_player
+from Music_handle import Music_handler
 
 
 class Ui_Form(object):
@@ -18,6 +19,8 @@ class Ui_Form(object):
         Form.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         Form.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.mp = music_player()
+        self.music_handle = Music_handler(self.mp)
+        self.music_handle.start()
         self.frame = QtWidgets.QFrame(Form)
         self.frame.setGeometry(QtCore.QRect(0, 0, 1291, 768))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -714,6 +717,7 @@ class Ui_Form(object):
         self.thread = Qthread.ThreadTask(self.mp)
         self.thread.trigger.connect(self.update_time_label)
         self.thread.qthread_signal.connect(self.update_process_bar)
+        self.music_handle.finished.connect(self.autochangesong)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def playevent(self):
@@ -723,10 +727,12 @@ class Ui_Form(object):
                     self.thread.start()
                     self.thread.r_thread()
                     self.update_info()
+                    self.music_handle.playing()
                 else:
                     self.mp.unpause()
                     self.thread.start()
                     self.thread.r_thread()
+                    self.music_handle.playing()
             else:
                 self.thread.s_thread()
                 self.mp.pause()
@@ -759,6 +765,10 @@ class Ui_Form(object):
 
     def update_process_bar(self,value):
         self.music_bar.setValue(value)
+
+    def autochangesong(self,value):
+        if value == "Finished":
+            self.nextsong_event()
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

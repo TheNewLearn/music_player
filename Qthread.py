@@ -1,7 +1,7 @@
 from time import sleep
 from PyQt5.QtCore import QThread, pyqtSignal
 from pygame import mixer
-from player_view import music_player
+
 
 
 class ThreadTask(QThread):

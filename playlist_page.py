@@ -9,13 +9,15 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import custom_item
 
 class Ui_playlist_page(object):
-    def setupUi(self, playlist_page):
+    def setupUi(self, playlist_page,mp):
         playlist_page.setObjectName("playlist_page")
-        playlist_page.resize(1071, 681)
+        playlist_page.resize(1072, 681)
         playlist_page.setStyleSheet("")
+        self.mp = mp
+        self.playlist = self.mp.playlist()
         self.frame = QtWidgets.QFrame(playlist_page)
         self.frame.setGeometry(QtCore.QRect(0, 0, 1071, 681))
         self.frame.setStyleSheet("#frame{\n"
@@ -28,7 +30,7 @@ class Ui_playlist_page(object):
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 1071, 681))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(20, 0, 20, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.playlist_label = QtWidgets.QLabel(self.verticalLayoutWidget)
         self.playlist_label.setStyleSheet("#playlist_label{\n"
@@ -37,23 +39,29 @@ class Ui_playlist_page(object):
 "border-radius:5px;\n"
 "text-align:left;\n"
 "font: 15pt \"Russo One\";\n"
-"margin-top: 20px;\n"
-"margin-left:20px;\n"
+"margin-top: 50px;\n"
 "}")
         self.playlist_label.setObjectName("playlist_label")
         self.verticalLayout.addWidget(self.playlist_label)
-        self.label = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label.setStyleSheet("background-color:rgba(18,19,25,255);\n"
-"color:rgba(253,253,254,255);\n"
-"border-radius:5px;\n"
-"text-align:left;\n"
-"font: 15pt \"Russo One\";\n"
-"margin-top: 20px;\n"
-"margin-left:20px;")
-        self.label.setObjectName("label")
-        self.verticalLayout.addWidget(self.label)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
+        self.listWidget = QtWidgets.QListWidget(self.verticalLayoutWidget)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout.addWidget(self.listWidget)
+        for i in self.playlist:
+            cust_item = custom_item.QCustomQWidget()
+            cust_item.setTextUp(i.title)
+            cust_item.setTextDown(i.author)
+            cust_item.setIcon(i.img)
+            cust_item.settime(i.end_time)
+            myQListWidgetItem = QtWidgets.QListWidgetItem(self.listWidget)
+            myQListWidgetItem.setSizeHint(cust_item.sizeHint())
+            self.listWidget.addItem(myQListWidgetItem)
+            self.listWidget.setItemWidget(myQListWidgetItem, cust_item)
+        self.listWidget.setMinimumSize(1071,592)
+        self.listWidget.setStyleSheet('''
+        background-color:rgba(20,21,28,255);
+        border:0px;
+        ''')
+
 
         self.retranslateUi(playlist_page)
         QtCore.QMetaObject.connectSlotsByName(playlist_page)
@@ -62,4 +70,3 @@ class Ui_playlist_page(object):
         _translate = QtCore.QCoreApplication.translate
         playlist_page.setWindowTitle(_translate("playlist_page", "Form"))
         self.playlist_label.setText(_translate("playlist_page", "Play List"))
-        self.label.setText(_translate("playlist_page", "Test"))

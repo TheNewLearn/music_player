@@ -726,7 +726,7 @@ class Ui_Form(object):
         self.stack.addWidget(self.indexpage)
         page2 = QtWidgets.QWidget()
         self.playlistpage = playlist_page.Ui_playlist_page()
-        self.playlistpage.setupUi(page2)
+        self.playlistpage.setupUi(page2,self.mp)
         self.stack.addWidget(page2)
         self.retranslateUi(Form)
         self.thread = Qthread.ThreadTask(self.mp)

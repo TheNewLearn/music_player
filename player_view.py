@@ -4,7 +4,7 @@ from music import music
 
 
 class music_player:
-    path = "C:/Users/fung/Desktop/music/*/*/*.mp3"
+    path = "../music/*/*/*.mp3"
     music = []
     current_play = ""
     playtime = ""
@@ -91,16 +91,18 @@ class music_player:
             self.ispaued = False
 
     def play_song(self):
+        mixer.music.stop()
         if self.current_index == 0:
             mixer.music.load(self.playlist()[0].path)
             mixer.music.play()
-        if not mixer.music.get_busy() and not self.ispaued:
-            self.next()
-        elif self.ispaued:
-            mixer.music.pause()
+        elif not mixer.music.get_busy() and not self.ispaued:
+            mixer.music.load(self.playlist()[self.current_index].path)
+            mixer.music.play()
 
 
 
+    def select_song(self,index):
+        self.current_index = index
 
     def next(self):
         if self.current_index < len(self.playlist())-1:

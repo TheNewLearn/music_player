@@ -734,7 +734,19 @@ class Ui_Form(object):
         self.thread.qthread_signal.connect(self.update_process_bar)
         self.music_handle.finished.connect(self.autochangesong)
         self.stack.setCurrentIndex(0)
+        self.playlistpage.listWidget.doubleClicked.connect(self.select_song)
         QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def select_song(self):
+        index = self.playlistpage.listWidget.currentRow()
+        if index != self.mp.current_index:
+            self.mp.select_song(index)
+            self.play_button.setChecked(True)
+            self.mp.play_song()
+            self.thread.start()
+            self.update_info()
+        else:
+            self.play_button.click()
 
     def playevent(self):
             if self.play_button.isChecked():

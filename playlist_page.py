@@ -9,9 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 import custom_item
 
+
 class Ui_playlist_page(object):
+    indexsignal = QtCore.pyqtSignal(int)
+
     def setupUi(self, playlist_page,mp):
         playlist_page.setObjectName("playlist_page")
         playlist_page.resize(1072, 681)
@@ -48,7 +52,11 @@ class Ui_playlist_page(object):
         self.verticalLayout.addWidget(self.listWidget)
         for i in self.playlist:
             cust_item = custom_item.QCustomQWidget()
-            cust_item.setTextUp(i.title)
+            if i.title != None:
+                cust_item.setTextUp(i.title)
+            else:
+                resu = self.findname_title(i.path)
+                cust_item.setTextUp(resu[1])
             cust_item.setTextDown(i.author)
             cust_item.setIcon(i.img)
             cust_item.settime(i.end_time)
@@ -57,12 +65,11 @@ class Ui_playlist_page(object):
             self.listWidget.addItem(myQListWidgetItem)
             self.listWidget.setItemWidget(myQListWidgetItem, cust_item)
         self.listWidget.setMinimumSize(1071,592)
+        self.listWidget
         self.listWidget.setStyleSheet('''
         background-color:rgba(20,21,28,255);
         border:0px;
         ''')
-
-
         self.retranslateUi(playlist_page)
         QtCore.QMetaObject.connectSlotsByName(playlist_page)
 
@@ -70,3 +77,10 @@ class Ui_playlist_page(object):
         _translate = QtCore.QCoreApplication.translate
         playlist_page.setWindowTitle(_translate("playlist_page", "Form"))
         self.playlist_label.setText(_translate("playlist_page", "Play List"))
+
+    def findname_title(self,path):
+        ls = str(path).split("\\")
+        return ls[2],ls[3][0:len(ls[3])-4]
+
+    def listwidgetclicked(self):
+        print('!!! click {}'.format(self.listWidget.currentRow()))
